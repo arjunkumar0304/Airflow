@@ -313,3 +313,157 @@ trigger_dag = TriggerDagRunOperator(
 
 ---
 
+
+
+
+
+
+## 1.5 Workflow Management in Airflow
+
+Workflow Management in Airflow means **defining, scheduling, and controlling task execution order** inside a DAG.
+
+> Airflow manages workflows using DAGs (Directed Acyclic Graphs).
+
+---
+
+## 1.5.1 Default Arguments (default_args)
+
+### What are Default Arguments?
+
+`default_args` is a **dictionary** used to define **common parameters** for all tasks in a DAG.
+
+### Why use default_args?
+
+* Avoid repeating code
+* Centralized configuration
+* Cleaner DAGs
+
+### Common Parameters
+
+* `owner`
+* `start_date`
+* `retries`
+* `retry_delay`
+* `email_on_failure`
+
+### Example
+
+```python
+default_args = {
+    'owner': 'airflow',
+    'start_date': datetime(2024, 1, 1),
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5)
+}
+```
+
+---
+
+## 1.5.2 Schedule Interval
+
+### What is Schedule Interval?
+
+Defines **how often a DAG should run**.
+
+### Common Schedule Values
+
+| Schedule        | Meaning             |
+| --------------- | ------------------- |
+| `@daily`        | Once every day      |
+| `@hourly`       | Every hour          |
+| `@weekly`       | Once a week         |
+| Cron Expression | Custom schedule     |
+| `None`          | Manual trigger only |
+
+### Example
+
+```python
+schedule_interval='@daily'
+```
+
+---
+
+## 1.5.3 Catchup
+
+### What is Catchup?
+
+Catchup decides whether **past scheduled DAG runs** should be executed when Airflow starts.
+
+### Values
+
+* `catchup=True` → Runs all missed DAG runs
+* `catchup=False` → Runs only latest DAG run
+
+### Recommended
+
+For production DAGs:
+
+```python
+catchup=False
+```
+
+---
+
+## 1.5.4 Task Dependencies
+
+### What are Task Dependencies?
+
+Task dependencies define **execution order** between tasks.
+
+> A task can start only after its upstream task finishes.
+
+### Methods to Define Dependencies
+
+* `>>` (right shift)
+* `<<` (left shift)
+* `set_upstream()`
+* `set_downstream()`
+
+---
+
+## 1.5.4.1 set_upstream() / set_downstream()
+
+### set_upstream()
+
+Defines a task that must run **before** the current task.
+
+### set_downstream()
+
+Defines a task that must run **after** the current task.
+
+### Example
+
+```python
+task1.set_downstream(task2)
+# OR
+task2.set_upstream(task1)
+```
+
+Equivalent shorthand:
+
+```python
+task1 >> task2
+```
+
+---
+
+## 1.5.5 Scheduled Trigger
+
+### What is Scheduled Trigger?
+
+A **Scheduled Trigger** starts a DAG automatically based on the `schedule_interval`.
+
+### Types of Triggers
+
+* Scheduled trigger (time-based)
+* Manual trigger (UI / CLI)
+* External trigger (TriggerDagRunOperator)
+
+### Example
+
+```python
+schedule_interval='0 2 * * *'  # Runs daily at 2 AM
+```
+
+---
+
