@@ -303,6 +303,8 @@ trigger_dag = TriggerDagRunOperator(
 
 
 
+
+
 * **Executor**: Defines how tasks are executed
 * **Operator**: Defines what task does
 * **BashOperator**: Runs shell commands
