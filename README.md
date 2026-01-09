@@ -469,3 +469,191 @@ schedule_interval='0 2 * * *'  # Runs daily at 2 AM
 
 ---
 
+
+
+
+
+
+
+## 1. Monitoring & Performance in Airflow
+
+Monitoring helps you **track the health, performance, and reliability** of your Airflow pipelines (DAGs and tasks).
+
+### Why Monitoring is Important
+
+* Detect DAG failures early
+* Identify slow or stuck tasks
+* Track SLA misses
+* Improve system performance
+* Ensure stable production pipelines
+
+---
+
+## 1.1 Monitoring & Observability
+
+### What is Observability?
+
+Observability means **understanding what is happening inside Airflow** by looking at:
+
+* Metrics (numbers)
+* Logs (events)
+* DAG & task states (visual view)
+
+### How to Monitor Airflow Practically
+
+#### 1. Airflow Web UI
+
+* DAG View → See DAG status (Success, Failed, Running)
+* Graph View → Task dependencies and failures
+* Tree View → Daily execution status
+* Gantt View → Task execution time and bottlenecks
+
+#### 2. Metrics Monitoring
+
+Airflow exposes metrics such as:
+
+* Task duration
+* DAG run duration
+* Scheduler heartbeat
+
+Can be integrated with:
+
+* Prometheus
+* Grafana
+* StatsD
+
+#### 3. SLA Monitoring
+
+* SLA (Service Level Agreement) defines time limits for tasks
+* Airflow alerts when SLA is missed
+  nExample:
+
+```python
+sla=timedelta(minutes=30)
+```
+
+#### 4. Alerts & Notifications
+
+* Email alerts on task failure
+* Custom alerts using callbacks
+
+---
+
+## 1.2 Logging & Debugging
+
+Logging helps you **understand what happened inside a task**.
+
+### Airflow Logging
+
+* Each task instance generates logs
+* Logs are stored locally or in cloud storage (S3, Azure Blob, GCS)
+
+### Where to See Logs
+
+* Airflow UI → Click Task → View Log
+* Server path:
+
+  ```
+  AIRFLOW_HOME/logs/
+  ```
+
+### Log Levels
+
+* INFO → Normal execution messages
+* WARNING → Potential issues
+* ERROR → Task failure
+
+Example:
+
+```python
+import logging
+logging.info("Task started")
+logging.error("Something went wrong")
+```
+
+### Debugging Techniques
+
+* Re-run failed tasks
+* Check logs for stack traces
+* Use task retries
+* Use `airflow tasks test` command
+
+---
+
+## 2. Trigger Rules & DAG Scheduling
+
+---
+
+## 2.1 Trigger Rules
+
+Trigger rules define **when a task should run based on upstream task status**.
+
+### Default Trigger Rule
+
+* `all_success` (task runs only if all upstream tasks succeed)
+
+### Common Trigger Rules
+
+| Trigger Rule | Description                         |
+| ------------ | ----------------------------------- |
+| all_success  | All upstream tasks must succeed     |
+| one_success  | At least one upstream task succeeds |
+| all_failed   | All upstream tasks must fail        |
+| one_failed   | At least one upstream task fails    |
+| all_done     | Runs regardless of upstream result  |
+
+Example:
+
+```python
+trigger_rule="all_done"
+```
+
+---
+
+## 2.2 DAG Scheduling
+
+DAG scheduling defines **when and how often a DAG runs**.
+
+### Key Scheduling Parameters
+
+#### 1. start_date
+
+* The date from which DAG starts scheduling
+
+#### 2. schedule_interval
+
+Defines execution frequency:
+
+* `@daily`
+* `@hourly`
+* `@once`
+* Cron expression (`0 6 * * *`)
+
+#### 3. catchup
+
+* `True` → runs all missed DAG runs
+* `False` → runs only latest schedule
+
+Example:
+
+```python
+default_args = {
+    'start_date': datetime(2025, 1, 1)
+}
+
+DAG(
+    dag_id='example_dag',
+    schedule_interval='@daily',
+    catchup=False
+)
+```
+
+---
+
+## 2.3 DAG Run Types
+
+* Scheduled Run → Triggered by scheduler
+* Manual Run → Triggered from UI or CLI
+* Backfill Run → Past execution runs
+
+---
