@@ -1,0 +1,32 @@
+{
+	"name": "demo_loadinput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "azuresourceBlobSt",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "loading-input"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "CountryCode",
+				"type": "String"
+			},
+			{
+				"name": "CountryName",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,37 @@
+{
+	"name": "childpipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Setvariable",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "recievedfile",
+					"value": {
+						"value": "@pipeline().parameters.childpipeline\n",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"childpipeline": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"recievedfile": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-12-24T18:12:51Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
